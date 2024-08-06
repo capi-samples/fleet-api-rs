@@ -1,0 +1,34 @@
+sources:
+  sourceid:
+    name: Get release version from fleet
+    kind: githubRelease
+    spec:
+      owner: "rancher"
+      repository: "fleet"
+      username: '{{ requiredEnv "GITHUB_USER" }}'
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      versionfilter:
+        kind: "latest"
+
+targets:
+  versionFile:
+    name: Bump fleet version
+    kind: yaml
+    spec:
+      key: $.fleet_api.tag
+      file: version.yaml
+  packageFile:
+    name: Sync fleet-api-rs version
+    kind: toml
+    spec:
+      key: package.version
+      file: Cargo.toml
+    transformers:
+      - trimprefix: "v"
+  commit:
+    name: Add and commit the changes
+    kind: shell
+    spec:
+      command: just add-and-commit
+      environments:
+        - name: PATH
