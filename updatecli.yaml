@@ -7,9 +7,9 @@ sources:
       repository: "fleet"
       username: '{{ requiredEnv "GITHUB_USER" }}'
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      versionfilter:
-        kind: "latest"
-
+      versionFilter:
+        kind: semver
+        pattern: v0.10.2
 targets:
   versionFile:
     name: Bump fleet version
@@ -17,6 +17,14 @@ targets:
     spec:
       key: $.fleet_api.tag
       file: version.yaml
+  updatecli:
+    name: Bump fleet version in updatecli pattern
+    kind: yaml
+    spec:
+      key: $.sources.sourceid.spec.versionFilter.pattern
+      file: updatecli.yaml
+    transformers:
+      - addprefix: ">"
   packageFile:
     name: Sync fleet-api-rs version
     kind: toml
