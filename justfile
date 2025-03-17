@@ -20,6 +20,7 @@ generate: _create-out-dir update-version && fmt
     just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/${version}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_cluster.rs" "select(.spec.names.singular==\"cluster\")" "--no-condition"
     just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/${version}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_clustergroup.rs" "select(.spec.names.singular==\"clustergroup\")" "--no-condition"
     just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/${version}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_cluster_registration_token.rs" "select(.spec.names.singular==\"clusterregistrationtoken\")" ""
+    just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/${version}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_bundle_namespace_mapping.rs" "select(.spec.names.singular==\"bundlenamespacemapping\")" ""
 
 [private]
 _generate-default-kopium-url kpath="" source="" dest="" yqexp="." condition="": _download-yq _install-kopium
