@@ -1,0 +1,17 @@
+sources:
+  versionFile:
+    name: Updated fleet version
+    kind: yaml
+    spec:
+      key: $.fleet_api.tag
+      file: version.yaml
+targets:
+  packageFile:
+    name: Sync fleet-api-rs version
+    kind: toml
+    spec:
+      key: package.version
+      file: Cargo.toml
+    transformers:
+      - trimprefix: "v"
+
