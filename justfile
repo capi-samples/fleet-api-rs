@@ -13,10 +13,20 @@ default:
     @just --list --unsorted --color=always
 
 # generates files for CRDS
+generate-manual version: _create-out-dir && fmt
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    just update-manual-version "{{version}}"
+    just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/{{version}}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_cluster.rs" "select(.spec.names.singular==\"cluster\")" "--no-condition"
+    just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/{{version}}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_clustergroup.rs" "select(.spec.names.singular==\"clustergroup\")" "--no-condition"
+    just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/{{version}}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_cluster_registration_token.rs" "select(.spec.names.singular==\"clusterregistrationtoken\")" ""
+    just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/{{version}}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_bundle_namespace_mapping.rs" "select(.spec.names.singular==\"bundlenamespacemapping\")" ""
+
+# generates files for CRDS
 generate: _create-out-dir update-version && fmt
     #!/usr/bin/env bash
     set -euxo pipefail
-    version=`just current-version ".fleet_api.tag"`
+    version=$(just current-version ".fleet_api.tag")
     just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/${version}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_cluster.rs" "select(.spec.names.singular==\"cluster\")" "--no-condition"
     just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/${version}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_clustergroup.rs" "select(.spec.names.singular==\"clustergroup\")" "--no-condition"
     just _generate-default-kopium-url kopium "https://raw.githubusercontent.com/rancher/fleet/${version}/charts/fleet-crd/templates/crds.yaml" "src/api/fleet_cluster_registration_token.rs" "select(.spec.names.singular==\"clusterregistrationtoken\")" ""
@@ -33,10 +43,14 @@ _generate-kopium-url kpath="" source="" dest="" yqexp="." condition="": _downloa
 current-version path: _download-yq
     cat version.yaml | yq '{{path}}'
 
+update-manual-version version: _download-updatecli _download-yq
+    yq -i '.fleet_api.tag = "{{version}}"' version.yaml
+    updatecli apply --debug -c update-version.yaml
+
 update-version: _download-updatecli
     updatecli apply --debug
 
-generate-and-commit: generate
+generate-and-commit:
     #!/usr/bin/env bash
     set -euxo pipefail
     just add-and-commit `just current-version ".fleet_api.tag"`
