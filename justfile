@@ -50,7 +50,7 @@ update-manual-version version: _download-updatecli _download-yq
 update-version: _download-updatecli
     updatecli apply --debug
 
-generate-and-commit:
+generate-and-commit: generate
     #!/usr/bin/env bash
     set -euxo pipefail
     just add-and-commit `just current-version ".fleet_api.tag"`
