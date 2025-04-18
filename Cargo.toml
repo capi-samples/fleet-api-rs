@@ -19,4 +19,4 @@
   name = "fleet-api-rs"
   readme = "README.md"
   repository = "https://github.com/capi-samples/fleet-api-rs"
-  version = "0.12.0"
+  version = "0.12.1"
