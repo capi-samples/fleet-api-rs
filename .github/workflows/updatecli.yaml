@@ -53,7 +53,7 @@ jobs:
             if [[ "${before}" != "${after}" ]]; then
               cargo build
               echo publish=true >> $GITHUB_OUTPUT
-              git push
+              git push --force
             fi
           else
             echo "Using provided version: ${{ github.event.inputs.version }}"
