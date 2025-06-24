@@ -9,7 +9,7 @@ sources:
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
       versionFilter:
         kind: semver
-        pattern: =>v0.12.3
+        pattern: =>v0.12.4
 targets:
   versionFile:
     name: Bump fleet version
